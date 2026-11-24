@@ -1,0 +1,207 @@
+/* base.css — 全域樣式：大廳氛圍、頂欄、側欄、籌碼、按鈕、特效 */
+:root {
+  --gold: #d4af37; --gold-l: #fcf6ba; --gold-d: #8f5f10;
+  --ink: #06070b; --panel: rgba(14, 17, 28, .82); --line: rgba(212, 175, 55, .3);
+  --felt: #0d6a33; --felt-d: #04301a; --txt: #eef0f6; --mut: #98a1b6;
+  --f-ui: 'Montserrat', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  --f-title: 'Cinzel', 'Noto Serif TC', serif;
+  --f-led: 'Orbitron', 'Courier New', monospace;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { min-height: 100%; }
+body {
+  font-family: 'Montserrat', 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+  color: var(--txt); background: #05060a; overflow-x: hidden; user-select: none;
+  display: flex; flex-direction: column; min-height: 100vh;
+}
+/* 賭場地毯 + 天花板射燈 */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -2;
+  background:
+    radial-gradient(circle at 25% 25%, rgba(212, 175, 55, .13) 0 2px, transparent 3px),
+    radial-gradient(circle at 75% 75%, rgba(212, 175, 55, .13) 0 2px, transparent 3px),
+    linear-gradient(45deg, rgba(120, 20, 45, .22) 25%, transparent 25% 75%, rgba(120, 20, 45, .22) 75%),
+    linear-gradient(135deg, #1d0a14, #0a0c1b);
+  background-size: 44px 44px, 44px 44px, 44px 44px, auto;
+}
+body::after {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(ellipse 38% 55% at 20% -5%, rgba(255, 226, 150, .2), transparent 70%),
+    radial-gradient(ellipse 38% 55% at 80% -5%, rgba(255, 226, 150, .2), transparent 70%),
+    radial-gradient(ellipse 90% 80% at 50% 45%, transparent 35%, rgba(0, 0, 0, .78) 100%);
+}
+button { font-family: inherit; cursor: pointer; color: inherit; }
+.gold-text {
+  background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+}
+
+/* ---------- 頂欄 ---------- */
+.topbar {
+  position: sticky; top: 0; z-index: 40; display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 8px; padding: 10px 18px;
+  background: linear-gradient(180deg, #1b1408 0%, #0a0805 100%);
+  border-bottom: 2px solid var(--gold-d);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, .8), inset 0 1px 0 rgba(255, 230, 150, .35), 0 1px 0 #000;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand h1 { font: 900 20px 'Cinzel', serif; letter-spacing: .12em; }
+.brand p { font-size: 10px; color: var(--mut); }
+.logo {
+  width: 42px; height: 42px; border-radius: 50%; display: grid; place-items: center; font-size: 24px; color: #2a1a00;
+  background: radial-gradient(circle at 35% 30%, #fff6c0, #d4af37 45%, #7c5208);
+  box-shadow: 0 3px 0 #5a3b05, 0 6px 12px rgba(0, 0, 0, .7), inset 0 -3px 5px rgba(0, 0, 0, .35);
+}
+.burger { display: none; background: none; border: 0; font-size: 26px; color: var(--gold); padding: 0 6px; }
+.top-right { display: flex; align-items: center; gap: 10px; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--line); font-size: 17px; color: var(--gold);
+  background: linear-gradient(180deg, #2a2a33, #111118); box-shadow: 0 3px 0 #000, inset 0 1px 0 rgba(255, 255, 255, .15);
+}
+.icon-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
+.wallet {
+  display: flex; flex-direction: column; align-items: flex-end; padding: 4px 14px; border-radius: 10px;
+  background: #020403; border: 1px solid #3b3416; box-shadow: inset 0 0 12px #000, 0 0 0 2px #1a160a;
+}
+.wallet small { font-size: 8px; letter-spacing: .12em; color: #8a7a3a; font-weight: 800; }
+.wallet b {
+  font: 800 19px 'Orbitron', monospace; color: #52ff8a; text-shadow: 0 0 10px rgba(82, 255, 138, .75);
+}
+.wallet b.up { animation: wUp .8s; }
+.wallet b.down { animation: wDown .5s; }
+@keyframes wUp { 0%, 100% { color: #52ff8a; } 30% { color: #fff; text-shadow: 0 0 18px #fff; transform: scale(1.12); } }
+@keyframes wDown { 30% { color: #ff6a6a; text-shadow: 0 0 12px #f33; } }
+
+/* ---------- 主架構 ---------- */
+.app { display: flex; gap: 16px; width: 100%; max-width: 1380px; margin: 0 auto; padding: 14px; flex: 1; }
+.side { width: 236px; flex: none; display: flex; flex-direction: column; gap: 8px; }
+.side h3 { font-size: 10px; letter-spacing: .22em; color: var(--mut); padding: 4px 8px; }
+.nav {
+  display: flex; align-items: center; gap: 10px; width: 100%; padding: 11px 12px; text-align: left; font-size: 13px; font-weight: 600;
+  color: #cfd3e0; border-radius: 12px; border: 1px solid rgba(255, 255, 255, .08);
+  background: linear-gradient(180deg, rgba(40, 44, 62, .85), rgba(14, 16, 26, .92));
+  box-shadow: 0 4px 0 #05060a, 0 8px 14px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .1);
+  transition: transform .15s, box-shadow .15s, color .15s;
+}
+.nav:hover { transform: translateY(-2px); }
+.nav .n { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 800 11px Montserrat; color: #1a1200; background: linear-gradient(145deg, #fff0a8, #b98512); flex: none; }
+.nav small { display: block; font-size: 9px; color: var(--mut); font-weight: 600; letter-spacing: .06em; }
+.nav.on {
+  color: var(--gold-l); border-color: var(--gold);
+  background: linear-gradient(180deg, #4a3a10, #1d1606);
+  box-shadow: 0 2px 0 #05060a, 0 0 18px rgba(212, 175, 55, .45), inset 0 1px 0 rgba(255, 240, 160, .35); transform: translateY(2px);
+}
+.stage { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+#views {
+  flex: 1; position: relative; min-height: 600px; border-radius: 20px; overflow: hidden;
+  background: radial-gradient(ellipse at 50% 0%, rgba(60, 40, 90, .45), rgba(8, 9, 15, .86) 70%);
+  border: 1px solid var(--line); box-shadow: 0 20px 50px rgba(0, 0, 0, .75), inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+.view { display: none; padding: 16px 12px 24px; min-height: 100%; }
+.view.on { display: block; animation: viewIn .45s ease; }
+.view-title { text-align: center; font: 900 12px var(--f-ui); letter-spacing: .3em; color: var(--mut); margin-bottom: 4px; }
+.view-title small { display: block; margin-top: 4px; font-size: 10px; letter-spacing: .08em; color: #6f7790; font-weight: 600; }
+.fit-box { position: relative; width: 100%; }
+.fit-inner { position: absolute; left: 0; right: 0; top: 0; margin: 0 auto; transform-origin: top center; }
+@keyframes viewIn { from { opacity: 0; transform: translateY(14px) scale(.985); } }
+
+/* ---------- 底部籌碼列 ---------- */
+.bar {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 10px 16px; border-radius: 16px;
+  background: linear-gradient(180deg, #2a1e0c, #100b04); border: 1px solid var(--gold-d);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 220, 130, .3);
+}
+.chip-row { display: flex; align-items: center; gap: 12px; padding: 2px 4px 8px; }
+.status {
+  flex: 1; min-width: 220px; padding: 9px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #ffd75e;
+  background: #050403; border: 1px solid #2d2610; box-shadow: inset 0 0 14px #000; text-shadow: 0 0 8px rgba(255, 190, 40, .6);
+}
+.status.warn { color: #ff8a7a; text-shadow: 0 0 8px rgba(255, 80, 60, .6); }
+.status.win { color: #7dffa8; text-shadow: 0 0 10px rgba(80, 255, 140, .7); }
+.status.pop { animation: statusPop .35s; }
+@keyframes statusPop { from { transform: scale(.97); opacity: .4; } }
+.foot { text-align: center; padding: 12px; font-size: 11px; color: #6b7184; background: #040508; border-top: 1px solid rgba(212, 175, 55, .12); }
+
+/* ---------- 3D 籌碼 ---------- */
+.chip3d {
+  --c: #d62839; --cd: #6e0f1c; --cl: #ff7684;
+  position: relative; width: 48px; height: 48px; border-radius: 50%; border: 0; color: #fff; font: 800 12px Montserrat;
+  background: repeating-conic-gradient(from -7deg, #fff 0 14deg, var(--c) 14deg 45deg);
+  box-shadow: 0 1px 0 var(--cd), 0 2px 0 var(--cd), 0 3px 0 var(--cd), 0 4px 0 var(--cd), 0 5px 0 var(--cd), 0 9px 10px rgba(0, 0, 0, .8);
+  transition: transform .18s cubic-bezier(.3, 1.6, .5, 1), box-shadow .18s;
+}
+.chip3d::before { content: ''; position: absolute; inset: 7px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, var(--cl), var(--c) 72%); border: 2px dashed rgba(255, 255, 255, .8); box-shadow: inset 0 0 8px rgba(0, 0, 0, .45); }
+.chip3d span { position: relative; z-index: 1; text-shadow: 0 1px 2px rgba(0, 0, 0, .8); }
+.chip3d.c25 { --c: #16974a; --cd: #07471f; --cl: #52e08a; }
+.chip3d.c100 { --c: #23262f; --cd: #050608; --cl: #5d6270; }
+.chip3d.c500 { --c: #7b2cbf; --cd: #34115a; --cl: #b975f5; }
+.chip3d.c1000 { --c: #d4a017; --cd: #6b4a05; --cl: #ffe58a; color: #3a2600; }
+.chip3d.c1000 span { text-shadow: 0 1px 0 rgba(255,255,255,.4); }
+.chip3d:hover { transform: translateY(-3px); }
+.chip3d.active { transform: translateY(-9px) scale(1.14); box-shadow: 0 1px 0 var(--cd), 0 2px 0 var(--cd), 0 3px 0 var(--cd), 0 4px 0 var(--cd), 0 5px 0 var(--cd), 0 16px 16px rgba(0, 0, 0, .8), 0 0 18px rgba(255, 215, 90, .85); }
+
+/* 桌面上的籌碼堆 */
+.stk { position: relative; display: inline-flex; align-items: flex-end; gap: 2px; pointer-events: none; }
+.stk .col { position: relative; width: 26px; height: calc(26px + var(--h) * 3px); }
+.stk .pc {
+  --c: #d62839; --cd: #6e0f1c; position: absolute; left: 0; bottom: calc(var(--i) * 3px); width: 26px; height: 26px; border-radius: 50%;
+  background: repeating-conic-gradient(from -7deg, #fff 0 14deg, var(--c) 14deg 45deg);
+  box-shadow: 0 2px 0 var(--cd), 0 3px 3px rgba(0, 0, 0, .6); display: block;
+}
+.stk .pc::after { content: ''; position: absolute; inset: 5px; border-radius: 50%; background: var(--c); border: 1px dashed rgba(255, 255, 255, .8); }
+.stk .pc.c25 { --c: #16974a; --cd: #07471f; }
+.stk .pc.c100 { --c: #23262f; --cd: #050608; }
+.stk .pc.c500 { --c: #7b2cbf; --cd: #34115a; }
+.stk .pc.c1000 { --c: #d4a017; --cd: #6b4a05; }
+.stk .pc.c1 { --c: #8b93a5; --cd: #3b4150; }
+.stk-amt {
+  position: absolute; left: 50%; top: -15px; transform: translateX(-50%); white-space: nowrap; font: 800 10px Montserrat; color: #111;
+  background: linear-gradient(#fff3b0, #d4af37); padding: 1px 6px; border-radius: 8px; box-shadow: 0 1px 3px #000;
+}
+
+/* ---------- 3D 按鈕 ---------- */
+.btn {
+  position: relative; border: 0; border-radius: 12px; padding: 11px 22px; font: 800 14px Montserrat; letter-spacing: .05em; color: #1a1200;
+  background: linear-gradient(180deg, #fff2a6, #d4af37 55%, #a8761a); text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+  box-shadow: 0 5px 0 #6b470a, 0 9px 14px rgba(0, 0, 0, .6), inset 0 1px 0 #fff9;
+  transition: transform .08s, box-shadow .08s, filter .15s;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn:active:not(:disabled) { transform: translateY(4px); box-shadow: 0 1px 0 #6b470a, 0 3px 6px rgba(0, 0, 0, .6), inset 0 1px 0 #fff9; }
+.btn:disabled { filter: grayscale(.9) brightness(.55); cursor: not-allowed; }
+.btn.green { color: #fff; background: linear-gradient(180deg, #4be58a, #14a24d 55%, #0b6b32); text-shadow: 0 1px 2px #0008; box-shadow: 0 5px 0 #064a21, 0 9px 14px rgba(0, 0, 0, .6), inset 0 1px 0 #fff6; }
+.btn.red { color: #fff; background: linear-gradient(180deg, #ff6f7d, #d02334 55%, #8a0f1c); text-shadow: 0 1px 2px #0008; box-shadow: 0 5px 0 #5c0912, 0 9px 14px rgba(0, 0, 0, .6), inset 0 1px 0 #fff6; }
+.btn.dark { color: var(--gold-l); background: linear-gradient(180deg, #3a3f52, #161924 60%, #0b0d14); text-shadow: 0 1px 2px #000; box-shadow: 0 5px 0 #000, 0 9px 14px rgba(0, 0, 0, .6), inset 0 1px 0 #fff3; border: 1px solid var(--line); }
+.btn.sm { padding: 8px 14px; font-size: 12px; }
+.btn-row { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; align-items: center; margin-top: 14px; }
+.hidden { display: none !important; }
+
+/* ---------- 大獎特效 ---------- */
+.bigwin { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; pointer-events: none; background: radial-gradient(circle, rgba(255, 200, 60, .35), rgba(0, 0, 0, .55) 70%); animation: bwIn .4s; overflow: hidden; }
+.bigwin.out { opacity: 0; transition: opacity .6s; }
+.bw-in { text-align: center; animation: bwPop .7s cubic-bezier(.2, 1.6, .4, 1); }
+.bw-in small { display: block; font: 900 clamp(26px, 6vw, 54px) 'Cinzel', serif; letter-spacing: .1em; background: linear-gradient(#fff6b0, #d4af37 60%, #8f5f10); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 4px 0 #3a2504) drop-shadow(0 0 20px rgba(255, 200, 60, .9)); }
+.bw-in b { display: block; font: 900 clamp(34px, 9vw, 78px) 'Orbitron', monospace; color: #fff; text-shadow: 0 0 24px #ffd24d, 0 4px 0 #8a5a00; }
+@keyframes bwIn { from { opacity: 0; } }
+@keyframes bwPop { from { transform: scale(.2) rotate(-8deg); opacity: 0; } }
+.rain-coin {
+  position: absolute; top: -50px; width: 30px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff6b0, #e8b923 50%, #8a5a00); border: 2px solid #b98512; box-shadow: inset 0 0 0 4px rgba(255, 255, 255, .15), 0 3px 6px rgba(0, 0, 0, .6);
+  animation: coinFall linear forwards;
+}
+@keyframes coinFall { to { transform: translateY(115vh) rotateX(var(--r)) rotateZ(var(--r)); } }
+
+/* ---------- 遊戲通用 ---------- */
+.game-title { text-align: center; font: 900 12px Montserrat; letter-spacing: .3em; color: var(--mut); margin-bottom: 10px; }
+.info-card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; font-size: 12px; color: #c9cee0; backdrop-filter: blur(6px); }
+.info-card h4 { font: 800 11px Montserrat; letter-spacing: .18em; color: var(--gold); margin-bottom: 8px; }
+
+@media (max-width: 900px) {
+  .burger { display: block; }
+  .side { position: fixed; z-index: 60; left: 0; top: 0; bottom: 0; width: 262px; padding: 70px 14px 14px; background: rgba(6, 7, 12, .97); transform: translateX(-104%); transition: transform .3s; box-shadow: 8px 0 30px #000; overflow-y: auto; }
+  .side.open { transform: none; }
+  .app { padding: 8px; }
+  .brand p { display: none; }
+  .wallet b { font-size: 15px; }
+}

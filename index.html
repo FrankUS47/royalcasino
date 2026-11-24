@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>皇家 3D 賭場總匯 - Royal 3D Casino</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Montserrat:wght@400;600;800&family=Orbitron:wght@500;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/tables.css">
+<link rel="stylesheet" href="css/machines.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <button class="burger" id="burger" aria-label="選單">☰</button>
+    <div class="logo">♛</div>
+    <div>
+      <h1 class="gold-text">ROYAL 3D CASINO</h1>
+      <p>旗艦級 3D 豪華賭場遊戲總匯</p>
+    </div>
+  </div>
+  <div class="top-right">
+    <button id="btn-sound" class="icon-btn" title="音效">🔊</button>
+    <div class="wallet"><small>籌碼餘額 CREDITS</small><b id="wallet">$1,000</b></div>
+    <button id="btn-refill" class="icon-btn" title="補充籌碼至 $1,000">⟳</button>
+  </div>
+</header>
+
+<div class="app">
+  <aside class="side" id="side"></aside>
+  <main class="stage">
+    <div id="views"></div>
+    <div class="bar">
+      <div class="chip-row" id="chipRow"></div>
+      <div class="status" id="status">歡迎來到皇家賭場！請選擇籌碼並開始遊戲。</div>
+    </div>
+  </main>
+</div>
+
+<footer class="foot">© Royal 3D Casino Simulator — 純前端模擬遊戲，僅供娛樂，無任何真實金錢。</footer>
+
+<!-- 載入順序不可調換 -->
+<script src="js/core.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/cards.js"></script>
+<script src="js/poker-eval.js"></script>
+<script src="js/slot.js"></script>
+<script src="js/roulette.js"></script>
+<script src="js/holdem.js"></script>
+<script src="js/sicbo.js"></script>
+<script src="js/threecard.js"></script>
+<script src="js/videopoker.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

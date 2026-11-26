@@ -15,8 +15,12 @@
   function mount(view, M) {
     const V = P.VP[M.variant];
     view.innerHTML = `
-      <div class="view-title">${M.sub.toUpperCase()}<small>下注 1–5 枚硬幣 · 點牌保留 · 按 DRAW 換牌 · 滑鼠移動可轉動視角</small></div>
-      <div class="fit-box" id="vpFit"><div class="fit-inner" id="vpInner">
+      <div class="slot-layout">
+        <aside class="side-pnl">
+          <h4>HOW TO PLAY 玩法<small>${M.sub}</small></h4>
+          <ol class="howto"><li><b>BET ONE</b> 選 1–5 枚硬幣（硬幣面額 = 底部籌碼）</li><li>按 <b>DEAL</b> 發 5 張牌</li><li>點牌或按 <b>HOLD</b> 保留想留的牌</li><li>按 <b>DRAW</b> 換牌，依牌型派彩</li><li>押滿 <b>5 枚</b> 皇家同花順最高賠 <b>4000</b></li></ol>
+          <div class="slot-hint"><kbd>SPACE</kbd> 發牌 / 換牌<br><kbd>1</kbd>–<kbd>5</kbd> 切換保留</div>
+        </aside>
         <div class="mach-scene"><div class="cab3d vp-cab ${M.theme}" id="vpCab">
           <div class="cab-side L"></div><div class="cab-side R"></div><div class="cab-back"></div><div class="cab-shadow"></div>
           <div class="cab-front">
@@ -44,9 +48,13 @@
             <div class="tray" id="vTray"><div class="lbl">COIN TRAY</div></div>
           </div>
         </div></div>
-      </div></div>
-      <div class="slot-hint">點牌或按 HOLD 保留 · <kbd>SPACE</kbd> 發牌 / 換牌 · <kbd>1</kbd>–<kbd>5</kbd> 切換保留</div>`;
+        <aside class="side-pnl">
+          <h4>RECENT 最近牌局<small>共 <b id="hSpins">0</b> 手 · 最高單次贏 <b id="hBest">$0</b></small></h4>
+          <div class="hist-list" id="vpHist"><div class="hist-empty">尚無紀錄</div></div>
+        </aside>
+      </div>`;
     const $ = s => view.querySelector(s), cab = $('#vpCab'), tray = $('#vTray');
+    const hist = []; let nHand = 0, bestW = 0;
     let coins = 1, st = 'idle', busy = false, shoe, hand = [], held = [false, false, false, false, false];
     const slots = C.$$('.vp-slot', view), holds = C.$$('.vp-holds .pbtn', view);
     const setLed = (id, v) => { $(id).textContent = Math.round(v); };
@@ -108,6 +116,10 @@
           msg('WINNER — ' + res.name, true); C.notify('🎉 ' + res.name + '！贏得 ' + C.fmt(win), 'win');
           setTimeout(() => cab.classList.remove('winning'), 3200);
         } else { msg('GAME OVER — 未成牌'); C.notify('未成牌，再來一手！'); C.sfx('lose'); }
+        nHand++; bestW = Math.max(bestW, win); hist.unshift({ n: nHand, name: res.name, win });
+        if (hist.length > 9) hist.pop();
+        $('#hSpins').textContent = nHand; $('#hBest').textContent = C.fmt(bestW);
+        $('#vpHist').innerHTML = hist.map(h => '<div class="hist-row vp ' + (h.win ? 'w' : '') + '"><i>#' + h.n + '</i><span>' + (h.win ? h.name : '未成牌') + '</span><b>' + (h.win ? '+' + C.fmt(h.win) : '—') + '</b></div>').join('');
         st = 'idle'; busy = false; ctrl(true); $('#vDeal').innerHTML = 'DEAL';
       }
     }
@@ -124,9 +136,8 @@
     refresh(); msg('INSERT COINS — PRESS DEAL');
     for (let i = 0; i < 5; i++) slots[i].querySelector('.vp-card').appendChild(K.el(null, false));
     C.tilt(view, cab, { baseX: 2, baseY: -11 });
-    const refit = C.fit($('#vpFit'), $('#vpInner'), 640, { vh: true, reserve: 215, min: .62 });
-    return { show: refit, primary: deal, tip: M.tip };
+    return { primary: deal, tip: M.tip };
   }
 
-  MACHINES.forEach(M => C.register({ id: M.id, name: M.name, sub: M.sub, icon: '🂡', tip: M.tip, mount: v => mount(v, M) }));
+  MACHINES.forEach(M => C.register({ id: M.id, name: M.name, sub: M.sub, icon: '🂡', tip: M.tip, w: 1560, mount: v => mount(v, M) }));
 })();

@@ -88,23 +88,18 @@
   function mount(view) {
     const lineBetOf = bet => bet / 5;
     view.innerHTML = DEFS + `
-      <div class="view-title">JUMBO 7s SLOT<small>3 轉輪 · 5 條連線 · 拉動側邊拉桿或按 SPIN</small></div>
-      <div class="fit-box" id="slotFit"><div class="fit-inner" id="slotInner">
+      <div class="slot-layout">
+        <aside class="side-pnl" id="slotPayPnl">
+          <h4>PAYTABLE 賠率表<small>每線賠率 × 單線注（總注 ÷ 5）</small></h4>
+          ${['seven', 'gem', 'bar', 'bell', 'lemon', 'cherry'].map(k => '<div class="bp-row"><span class="bp-ic">' + SVG[k] + SVG[k] + SVG[k] + '</span><b>×' + PAY[k] + '</b></div>').join('')}
+          <div class="bp-note">左輪櫻桃：1 顆 <b>×${CHERRY1}</b>　連 2 顆 <b>×${CHERRY2}</b></div>
+        </aside>
         <div class="mach-scene">
           <div class="cab3d slot-cab" id="slotCab">
             <div class="cab-side L"></div><div class="cab-side R"></div><div class="cab-back"></div><div class="cab-shadow"></div>
             <div class="cab-front">
               <div class="beacon" id="slotBeacon"></div>
               <div class="topper"><div class="bulbs" id="slotBulbs"></div><div class="logo7">ROYAL <b>7</b>s</div><small>DELUXE 3D SLOTS</small></div>
-              <div class="pay-lcd">
-                <div><span class="ps">${SVG.seven}${SVG.seven}${SVG.seven}</span><b>×${PAY.seven}</b></div>
-                <div><span class="ps">${SVG.gem}${SVG.gem}${SVG.gem}</span><b>×${PAY.gem}</b></div>
-                <div><span class="ps">${SVG.bar}${SVG.bar}${SVG.bar}</span><b>×${PAY.bar}</b></div>
-                <div><span class="ps">${SVG.bell}${SVG.bell}${SVG.bell}</span><b>×${PAY.bell}</b></div>
-                <div><span class="ps">${SVG.lemon}${SVG.lemon}${SVG.lemon}</span><b>×${PAY.lemon}</b></div>
-                <div><span class="ps">${SVG.cherry}${SVG.cherry}${SVG.cherry}</span><b>×${PAY.cherry}</b></div>
-                <div class="wide"><span>左輪櫻桃：1 顆 ×${CHERRY1}　連 2 顆 ×${CHERRY2}</span><span>每線賠率 × 單線注</span></div>
-              </div>
               <div class="reel-bezel"><div class="reel-window" id="slotWin">
                 ${[0, 1, 2].map(() => '<div class="reel"><div class="drum"></div><i class="motion"></i></div>').join('')}
                 <canvas class="payline-cv" id="slotCv" width="760" height="372"></canvas>
@@ -133,8 +128,12 @@
             <div class="lever" id="slotLever" title="拉動拉桿"><div class="lever-plate"></div><div class="lever-arm" id="leverArm"><div class="lever-ball"></div></div></div>
           </div>
         </div>
-      </div></div>
-      <div class="slot-hint">點擊側邊紅色拉桿或按 <kbd>SPACE</kbd> 開始 · 滑鼠移動可轉動視角</div>`;
+        <aside class="side-pnl" id="slotHistPnl">
+          <h4>RECENT 最近紀錄<small>共 <b id="hSpins">0</b> 轉 · 最高單次贏 <b id="hBest">$0</b></small></h4>
+          <div class="hist-list" id="slotHist"><div class="hist-empty">尚無紀錄</div></div>
+          <div class="slot-hint">用滑鼠 <b>按住紅色拉桿往下拉</b><br>拉到底放開即開始轉動<br>或按 <kbd>SPIN</kbd> / <kbd>SPACE</kbd></div>
+        </aside>
+      </div>`;
 
     const $ = s => view.querySelector(s);
     const cab = $('#slotCab'), tray = $('#slotTray'), cv = $('#slotCv'), cx = cv.getContext('2d');
@@ -197,18 +196,56 @@
       }
       while (tray.children.length > 44) tray.removeChild(tray.children[1]);
     }
-    function pullLever() {
-      C.sfx('lever');
-      $('#leverArm').animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(-80deg)', offset: .38 }, { transform: 'rotateX(0deg)' }], { duration: 800, easing: 'ease-in-out' });
+    /* ---- 拉桿：可用滑鼠 / 手指按住往下拖曳，拉過 62° 放開即開始轉動；單擊則自動做一次拉桿動畫 ---- */
+    const lever = $('#slotLever'), arm = $('#leverArm'), MAXA = 86, TRIG = 62;
+    let ang = 0, drag = null;
+    const setArm = a => { ang = a; arm.style.transform = 'rotateX(' + (-a) + 'deg)'; };
+    const stopArmAnim = () => arm.getAnimations().forEach(x => x.cancel());
+    function springBack(ms) {
+      const a = ang; setArm(0);
+      if (a > 0.5) arm.animate([{ transform: 'rotateX(' + (-a) + 'deg)' }, { transform: 'rotateX(7deg)', offset: .72 }, { transform: 'rotateX(0deg)' }], { duration: ms || 520, easing: 'cubic-bezier(.3,.8,.4,1)' });
     }
+    function pullLever() {                      // 自動拉桿 (單擊 / 按鈕 / SPACE)
+      C.sfx('lever'); stopArmAnim();
+      arm.animate([{ transform: 'rotateX(0deg)' }, { transform: 'rotateX(-' + MAXA + 'deg)', offset: .34 }, { transform: 'rotateX(-' + MAXA + 'deg)', offset: .44 }, { transform: 'rotateX(7deg)', offset: .82 }, { transform: 'rotateX(0deg)' }], { duration: 900, easing: 'ease-in-out' });
+    }
+    lever.addEventListener('pointerdown', e => {
+      if (busy || e.button > 0) return;
+      stopArmAnim(); setArm(0);
+      drag = { y: e.clientY, moved: false, step: 0, px: lever.querySelector('.lever-plate').getBoundingClientRect().height / 52 };
+      lever.setPointerCapture(e.pointerId); lever.classList.add('grab'); e.preventDefault();
+    });
+    lever.addEventListener('pointermove', e => {
+      if (!drag) return;
+      const dy = e.clientY - drag.y;
+      if (Math.abs(dy) > 4) drag.moved = true;
+      const a = Math.max(0, Math.min(MAXA, dy / (185 * drag.px) * 90));
+      setArm(a);
+      const st = Math.floor(a / 14); if (st !== drag.step) { drag.step = st; C.sfx('click'); }
+    });
+    const endDrag = () => {
+      if (!drag) return; const d = drag; drag = null; lever.classList.remove('grab');
+      if (!d.moved) { spin(); return; }               // 單擊
+      if (ang >= TRIG && !busy) { spin(true); } else { C.sfx('click'); }
+      springBack(ang >= TRIG ? 700 : 380);
+    };
+    lever.addEventListener('pointerup', endDrag); lever.addEventListener('pointercancel', endDrag);
+    lever.addEventListener('lostpointercapture', () => { if (drag) endDrag(); });
     const press = b => { b.classList.add('down'); setTimeout(() => b.classList.remove('down'), 140); };
     const ctrl = on => ['#sSpin', '#sBet', '#sMax', '#sCash'].forEach(s => { $(s).disabled = !on; });
 
-    async function spin() {
+    const hist = []; let nSpin = 0, best = 0;
+    function addHist(bet, win) {
+      nSpin++; best = Math.max(best, win); hist.unshift({ n: nSpin, bet, win });
+      if (hist.length > 9) hist.pop();
+      $('#hSpins').textContent = nSpin; $('#hBest').textContent = C.fmt(best);
+      $('#slotHist').innerHTML = hist.map(h => '<div class="hist-row ' + (h.win ? 'w' : '') + '"><i>#' + h.n + '</i><span>' + C.fmt(h.bet) + '</span><b>' + (h.win ? '+' + C.fmt(h.win) : '—') + '</b></div>').join('');
+    }
+    async function spin(pulled) {
       if (busy) return;
       const bet = C.state.chip;
       if (!C.spend(bet)) return;
-      busy = true; clearWin(); pullLever(); press($('#sSpin')); ctrl(false);
+      busy = true; clearWin(); if (pulled === true) C.sfx('lever'); else { pullLever(); press($('#sSpin')); } ctrl(false);
       tray.classList.remove('full'); C.$$('.tcoin', tray).forEach(c => c.remove());
       C.notify('轉輪旋轉中…');
       const loop = C.sfxLoop();
@@ -237,10 +274,11 @@
         C.notify('🎉 ' + wins.length + ' 條連線中獎！贏得 ' + C.fmt(win), 'win');
         setTimeout(() => { cab.classList.remove('winning'); $('#slotBeacon').classList.remove('on'); }, 3400);
       } else C.notify('未中獎，再拉一次試試手氣！');
+      addHist(bet, win);
       ctrl(true); busy = false;
     }
 
-    $('#sSpin').onclick = spin; $('#slotLever').onclick = spin;
+    $('#sSpin').onclick = () => spin();
     $('#sBet').onclick = () => { if (!busy) { press($('#sBet')); C.cycleChip(); } };
     $('#sMax').onclick = () => {
       if (busy) return; press($('#sMax'));
@@ -250,9 +288,8 @@
     };
     $('#sCash').onclick = () => { if (busy) return; press($('#sCash')); C.sfx('coins'); C.notify('🧾 現金票券列印中… 目前餘額 ' + C.fmt(C.state.wallet) + '（模擬機台，無真實金錢）'); };
     C.tilt(view, cab, { baseX: 2, baseY: -11 });
-    const refit = C.fit($('#slotFit'), $('#slotInner'), 640, { vh: true, reserve: 215, min: .62 });
-    return { show: refit, primary: spin, tip: '拉動右側拉桿或按 SPACE 開始；底部籌碼列決定每次總投注（5 條線平分）。' };
+    return { primary: () => spin(), tip: '按住右側紅色拉桿往下拉（或按 SPIN / SPACE）開始；底部籌碼列決定每次總投注（5 條線平分）。' };
   }
 
-  C.register({ id: 'slot', name: '吃角子老虎', sub: 'Slot Machine', icon: '🎰', mount });
+  C.register({ id: 'slot', name: '吃角子老虎', sub: 'Slot Machine', icon: '🎰', w: 1560, mount });
 })();

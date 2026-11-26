@@ -13,7 +13,6 @@
 
   function mount(view) {
     view.innerHTML = `
-      <div class="view-title">ROYAL HOLD'EM<small>終極德州撲克 · 對抗莊家 · 底注 + 盲注 · 莊家需一對以上才合格</small></div>
       ${K.tableHTML(`
         <div class="chiprack l"><i style="--ca:#d62839"></i><i style="--ca:#16974a"></i><i style="--ca:#23262f"></i><i style="--ca:#7b2cbf"></i></div>
         <div class="shoe r"></div>
@@ -111,5 +110,5 @@
     return { show() { buttons(); }, primary() { if (st === 'bet') deal(); else if (st !== 'river' && !busy) check(); }, tip: '按 DEAL 發牌；每階段可過牌或加注，最後與莊家比大小。' };
   }
 
-  C.register({ id: 'holdem', name: '德州撲克', sub: "Ultimate Hold'em", icon: '♠', mount });
+  C.register({ id: 'holdem', name: '德州撲克', sub: "Ultimate Hold'em", icon: '♠', w: 1260, mount });
 })();

@@ -10,7 +10,6 @@
 
   function mount(view) {
     view.innerHTML = `
-      <div class="view-title">THREE CARD POKER<small>三張牌撲克 · 底注 + Pair Plus · 莊家需 Q 高牌以上</small></div>
       ${K.tableHTML(`
         <div class="chiprack l"><i style="--ca:#d62839"></i><i style="--ca:#16974a"></i><i style="--ca:#23262f"></i><i style="--ca:#7b2cbf"></i></div>
         <div class="shoe r"></div>
@@ -85,5 +84,5 @@
     return { show() { buttons(); }, primary() { if (st === 'bet') deal(); else if (st === 'decide' && !busy) finish(false); }, tip: '按 DEAL 發牌，看牌後決定 PLAY 或 FOLD；可勾選 Pair Plus。' };
   }
 
-  C.register({ id: 'threecard', name: '三張牌撲克', sub: '3-Card Poker', icon: '♦', mount });
+  C.register({ id: 'threecard', name: '三張牌撲克', sub: '3-Card Poker', icon: '♦', w: 1260, mount });
 })();

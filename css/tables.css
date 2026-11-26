@@ -113,7 +113,7 @@
   background:radial-gradient(circle at 35% 30%,#555,#050505 70%);box-shadow:inset 0 -1px 2px rgba(255,255,255,.2)}
 .face .pip.one{width:100%;background:radial-gradient(circle at 35% 30%,#ff8a8a,#c8102e 65%,#6a0010)}
 .die.hit .face{box-shadow:inset 0 0 0 2px #ffd23f,0 0 18px #ffd23f}
-.sb-stage{position:relative;width:min(100%,420px);height:min(86vw,330px);margin:0 auto 6px}
+.sb-stage{position:relative;width:420px;height:330px;margin:0 auto 6px}
 .sb-base{position:absolute;left:4%;right:4%;bottom:4px;height:92px;border-radius:50%;
   background:radial-gradient(ellipse at 50% 30%,#4a4a58,#0e0e14 70%);border:4px solid #d4af37;box-shadow:0 22px 26px rgba(0,0,0,.75),inset 0 6px 12px rgba(255,255,255,.2),0 0 0 2px #5b4410}
 .sb-floor{position:absolute;left:9%;right:9%;bottom:20px;height:70px;border-radius:50%;background:radial-gradient(ellipse,#15602f,#08331a 75%);box-shadow:inset 0 6px 14px rgba(0,0,0,.7)}
@@ -166,8 +166,8 @@
 
 /* ---------- 輪盤：3D 傾斜實木轉盤 (多層疊出厚度) ---------- */
 .rl-top{perspective:1300px}
-.rl-wheel{height:min(60vw,400px);margin:0 auto;display:flex;justify-content:center;align-items:center}
-.rl-disc{position:relative;width:min(92vw,520px);aspect-ratio:1;transform-style:preserve-3d;transform:rotateX(54deg)}
+.rl-wheel{height:430px;margin:0 auto;display:flex;justify-content:center;align-items:center}
+.rl-disc{position:relative;width:540px;aspect-ratio:1;transform-style:preserve-3d;transform:rotateX(54deg)}
 .rl-disc .lay{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,#3b1a08,#1d0b03)}
 .rl-disc .lay.sh{background:rgba(0,0,0,.55);filter:blur(16px);inset:-2%}
 .rl-disc canvas{position:absolute;inset:0;width:100%;height:100%;filter:none!important}
@@ -176,3 +176,35 @@
 .tbl-scene .tbl-banner.show{z-index:30}
 .sb-glass{transition:transform .5s cubic-bezier(.3,.8,.3,1),opacity .5s}
 .sb-glass.lift{transform:translateY(-52px);opacity:.28}
+
+/* ===== 1920×1080 一屏版面：加大字級、橫向配置 ===== */
+.wide-row{display:flex;align-items:center;gap:24px}
+.wide-l{flex:none;width:540px;display:flex;flex-direction:column;align-items:center}
+.wide-r{flex:1;min-width:0}
+.rl-led{padding:10px 18px}.rl-led label{font-size:13px}
+.rl-hist{min-width:300px;gap:6px}.rl-hist i{width:34px;height:34px;font-size:15px}
+.rl-board{grid-template-rows:repeat(3,84px) 60px 60px!important}
+.rl-board .rc{font-size:32px}
+.sc{min-height:68px!important;font-size:20px!important}.sc.big{min-height:96px!important;font-size:28px!important}.sc small{font-size:.72em!important}
+.sb-stage{transform:scale(1.2);transform-origin:50% 40%;margin-bottom:60px}
+.rl-tools{margin-top:16px;gap:14px}.rl-total{font-size:20px}
+.sb-sum{font-size:22px;min-height:32px}
+.res-line{font-size:20px;margin-top:6px;min-height:28px}
+.tbl-info{font-size:17px}.tbl-ctl .btn small{font-size:13px}.tbl-ctl .btn{min-width:150px}
+.tbl-banner{font-size:clamp(24px,3.4cqw,44px)}.tbl-banner small{font-size:clamp(14px,1.8cqw,22px)}
+/* 撲克桌 */
+:root{--cw:100px}
+.tbl{width:min(100%,1200px);aspect-ratio:16/9.4}
+.tbl.flow{width:min(100%,1010px);aspect-ratio:auto}
+.wide-r .tbl-persp{margin:0 0 26px}
+.felt-t{font-size:clamp(14px,2.2cqw,30px)}
+.zone>label{font-size:clamp(12px,1.3cqw,19px)}
+.hname{font-size:clamp(15px,1.7cqw,24px)}
+.spot{width:clamp(64px,8.4cqw,112px);font-size:clamp(11px,1.3cqw,18px)}
+.spot b{font-size:1.05em}
+.tbl-persp{margin:-10px 0 4px}
+.felt-t small{font-size:.62em;letter-spacing:.12em}
+/* larger felt print */
+.felt-t{font-size:20px !important}
+.felt-t small{font-size:15px !important;letter-spacing:.06em}
+.zone label{font-size:17px}

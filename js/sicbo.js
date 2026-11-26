@@ -43,11 +43,12 @@
     rows += '<div class="sb-row">' + [1, 2, 3, 4, 5, 6].map(v => cellHTML('num:' + v, '', `${mini(v)}<small>1:1 · 2:1 · 3:1</small>`)).join('') + '</div>';
 
     view.innerHTML = `
-      <div class="view-title">SIC BO · 骰寶<small>三顆骰子 · 點擊賭桌下注 · 圍骰時大小單雙通殺</small></div>
+      <div class="wide-row"><div class="wide-l">
       <div class="sb-stage" id="sbStage"><div class="sb-base"></div><div class="sb-floor"></div>
         <div class="sb-dice" id="sbDice">${dieHTML()}${dieHTML()}${dieHTML()}</div><div class="sb-glass" id="sbGlass"></div></div>
       <div class="sb-sum" id="sbSum">請下注後按 ROLL 搖骰</div>
-      <div class="tbl-scene" id="sbScene"><div class="tbl-persp"><div class="tbl flow" style="--tilt:24deg">
+      </div><div class="wide-r">
+      <div class="tbl-scene" id="sbScene"><div class="tbl-persp"><div class="tbl flow" style="--tilt:18deg">
         <div class="tbl-rail"><div class="tbl-pad"><div class="tbl-felt"></div></div></div>
         <div class="tbl-in"><div id="sbBoard">${rows}</div></div>
       </div></div><div class="tbl-banner"></div></div>
@@ -56,7 +57,7 @@
         <button class="btn dark sm" id="sbUndo">↶ 復原</button><button class="btn dark sm" id="sbClear">✕ 清除</button><button class="btn dark sm" id="sbRe">↻ 重複上局</button>
         <button class="btn" id="sbRoll">ROLL 搖骰</button>
       </div>
-      <div class="res-line" id="sbRes"></div>`;
+      <div class="res-line" id="sbRes"></div></div></div>`;
     const $ = s => view.querySelector(s), scene = $('#sbScene'), stage = $('#sbStage'), glass = $('#sbGlass');
     const dice = C.$$('.die', view), cubes = C.$$('.cube', view);
     const cell = {}; C.$$('.sc', view).forEach(e => { cell[e.dataset.k] = e; });
@@ -121,5 +122,5 @@
     return { show() {}, primary: roll, tip: '點擊賭桌下注 (右鍵復原)，按 ROLL 或空白鍵搖骰。圍骰時大小單雙全數通殺。' };
   }
 
-  C.register({ id: 'sicbo', name: '骰寶', sub: 'Sic Bo', icon: '⚄', mount });
+  C.register({ id: 'sicbo', name: '骰寶', sub: 'Sic Bo', icon: '⚄', w: 1580, mount });
 })();

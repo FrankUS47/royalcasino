@@ -43,7 +43,7 @@
       .forEach(([k, t, c]) => { cells += `<div class="rc out" data-k="${k}" style="grid-column:${c} / span 2;grid-row:5">${t}</div>`; });
 
     view.innerHTML = `
-      <div class="view-title">EUROPEAN ROULETTE<small>歐式單零輪盤 · 點擊賭桌下注 · 可同時下多注</small></div>
+      <div class="wide-row"><div class="wide-l">
       <div class="rl-top">
         <div class="rl-led"><label>LAST<br>NUMBERS</label><div class="rl-hist" id="rlHist"></div></div>
         <div class="rl-wheel" id="rlWheel"><div class="rl-disc">
@@ -51,7 +51,8 @@
           <canvas id="rlCv"></canvas>
         </div></div>
       </div>
-      <div class="tbl-scene" id="rlScene"><div class="tbl-persp"><div class="tbl flow" style="--tilt:26deg">
+      </div><div class="wide-r">
+      <div class="tbl-scene" id="rlScene"><div class="tbl-persp"><div class="tbl flow" style="--tilt:18deg">
         <div class="tbl-rail"><div class="tbl-pad"><div class="tbl-felt"></div></div></div>
         <div class="tbl-in"><div class="rl-board" id="rlBoard">${cells}</div></div>
       </div></div><div class="tbl-banner"></div></div>
@@ -59,7 +60,7 @@
         <span class="rl-total">本局下注：<b id="rlTot">$0</b></span>
         <button class="btn dark sm" id="rlUndo">↶ 復原</button><button class="btn dark sm" id="rlClear">✕ 清除</button><button class="btn dark sm" id="rlRe">↻ 重複上局</button>
         <button class="btn" id="rlSpin">SPIN 旋轉</button>
-      </div>
+      </div></div></div>
       <div class="res-line" id="rlRes"></div>`;
     const $ = s => view.querySelector(s), scene = $('#rlScene');
     const cv = $('#rlCv'), g = cv.getContext('2d'), SIZE = 600;
@@ -236,5 +237,5 @@
     return { show() { draw(); }, primary: spin, tip: '先在賭桌上點擊下注 (右鍵可復原)，再按 SPIN 或空白鍵旋轉輪盤。' };
   }
 
-  C.register({ id: 'roulette', name: '俄羅斯輪盤', sub: 'European Roulette', icon: '◎', mount });
+  C.register({ id: 'roulette', name: '俄羅斯輪盤', sub: 'European Roulette', icon: '◎', w: 1580, mount });
 })();

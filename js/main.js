@@ -13,12 +13,14 @@
     C.$$('.nav').forEach(b => b.classList.toggle('on', b.dataset.id === id));
     current = id;
     if (apis[id].show) apis[id].show();
+    refit();
     C.notify(apis[id].tip || '請選擇籌碼並開始遊戲。');
     try { history.replaceState(null, '', '#' + id); } catch (e) {}
     C.$('#side').classList.remove('open');
     window.scrollTo({ top: 0 });
   }
   C.show = show;
+  function refit() { const a = apis[current]; if (a && a.fit) { a.fit(); requestAnimationFrame(a.fit); setTimeout(a.fit, 120); } }
 
   function init() {
     C.buildChipRow();
@@ -30,7 +32,7 @@
       const sec = document.createElement('section');
       sec.className = 'view'; sec.dataset.id = g.id; views.appendChild(sec);
       let api = {};
-      try { api = g.mount(sec) || {}; } catch (e) { console.error('[' + g.id + '] mount 失敗', e); sec.innerHTML = '<p style="padding:40px;text-align:center">此遊戲載入失敗</p>'; }
+      try { api = g.mount(sec) || {}; api.fit = C.fitView(sec, g.w || 1400); } catch (e) { console.error('[' + g.id + '] mount 失敗', e); sec.innerHTML = '<p style="padding:40px;text-align:center">此遊戲載入失敗</p>'; }
       api.tip = g.tip; apis[g.id] = api;
       const b = document.createElement('button');
       b.className = 'nav'; b.dataset.id = g.id;
@@ -47,7 +49,7 @@
         e.preventDefault(); apis[current].primary();
       }
     });
-    window.addEventListener('resize', () => { if (current && apis[current].show) apis[current].show(); });
+    window.addEventListener('resize', () => { if (current && apis[current].show) apis[current].show(); refit(); });
     show((location.hash || '').slice(1) || ORDER[0]);
   }
   window.addEventListener('DOMContentLoaded', init);

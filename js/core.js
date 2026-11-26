@@ -107,35 +107,27 @@
     })(t0);
   };
 
-  /* ---------- 版面縮放 (固定設計寬度 → 依容器等比縮放) ---------- */
-  C.fit = function (box, inner, w, opt) {        // opt.vh：同時依視窗高度縮小，讓整台機器一個畫面看得完
-    inner.style.width = w + 'px';
-    inner.style.left = '50%'; inner.style.right = 'auto'; inner.style.marginLeft = (-w / 2) + 'px';   // 窄螢幕時水平置中 (auto margin 在溢位時會靠左)
-    const f = () => {
-      const bw = box.clientWidth; if (!bw) return;
-      let s = Math.min(1, bw / w);
-      if (opt && opt.vh) s = Math.min(s, Math.max(opt.min || .6, (window.innerHeight - (opt.reserve || 210)) / inner.offsetHeight));
-      inner.style.transform = 'scale(' + s + ')';
-      box.style.height = Math.ceil(inner.offsetHeight * s) + 'px';
+  /* ---------- 版面縮放：每個遊戲以固定「設計尺寸」排版，再依舞台 (寬 × 高) 等比縮放 → 1920×1080 一屏看完，不需捲動 ---------- */
+  C.fitView = function (view, W) {
+    const scene = document.createElement('div'); scene.className = 'vscene';
+    while (view.firstChild) scene.appendChild(view.firstChild);
+    view.appendChild(scene); scene.style.width = W + 'px';
+    return function () {
+      const host = view.parentElement, mob = window.innerWidth <= 900;
+      const aw = host.clientWidth, ah = host.clientHeight; if (!aw) return;
+      scene.style.transform = 'none';
+      const h = scene.offsetHeight;
+      const s = Math.min(aw / W, mob ? 1.3 : ah / h, 1.9);
+      const offY = mob ? 0 : Math.max(0, (ah - h * s) / 2);
+      scene.style.transform = 'translate(-50%,' + offY + 'px) scale(' + s + ')';
+      view.style.height = mob ? Math.ceil(h * s) + 6 + 'px' : '';
     };
-    if (window.ResizeObserver) new ResizeObserver(f).observe(box);
-    return f;
   };
 
-  /* ---------- 滑鼠視角傾斜 (3D 機箱) ---------- */
+  /* ---------- 機箱視角：固定角度 (不再隨滑鼠晃動) ---------- */
   C.tilt = function (host, cab, o) {
     o = o || {};
-    const bx = o.baseX == null ? 2 : o.baseX, by = o.baseY == null ? -10 : o.baseY, mx = o.maxX == null ? 6 : o.maxX, my = o.maxY == null ? 18 : o.maxY;
-    const set = (x, y) => { cab.style.transform = 'rotateX(' + x + 'deg) rotateY(' + y + 'deg)'; };
-    set(bx, by);
-    host.addEventListener('pointermove', e => {
-      /* 指標在按鈕 / 拉桿 / 卡牌上時凍結視角，避免按鈕在游標下「跑掉」造成點不到 */
-      if (e.target.closest && e.target.closest('button, .lever, .vp-slot, .pbtn')) return;
-      const r = host.getBoundingClientRect();
-      const nx = ((e.clientX - r.left) / r.width - 0.5) * 2, ny = ((e.clientY - r.top) / r.height - 0.5) * 2;
-      set(bx - ny * mx, by + nx * my);
-    });
-    host.addEventListener('pointerleave', () => set(bx, by));
+    cab.style.transform = 'rotateX(' + (o.baseX == null ? 2 : o.baseX) + 'deg) rotateY(' + (o.baseY == null ? -10 : o.baseY) + 'deg)';
   };
 
   /* ---------- 大獎特效 ---------- */
